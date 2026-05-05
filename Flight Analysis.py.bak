@@ -179,7 +179,7 @@ def scrape_data(start_date,from_place,to_place,city_name):
                 time.sleep(0.01)
                 data.append((result.find_element_by_class_name('LJTSM3-w-k').find_elements_by_tag_name('div')[0].text,result.find_element_by_class_name('LJTSM3-w-k').find_elements_by_tag_name('div')[1].text))
     if not data:
-        print("Data Scraping failed")
+        print "Data Scraping failed"
         exit()
     clean_data=[]
     for d in data:
@@ -225,7 +225,7 @@ def scrape_data_90(start_date,from_place,to_place,city_name):
                 time.sleep(0.01)
                 data.append((result.find_element_by_class_name('LJTSM3-w-k').find_elements_by_tag_name('div')[0].text,result.find_element_by_class_name('LJTSM3-w-k').find_elements_by_tag_name('div')[1].text))
     if not data:
-        print("Data Scraping failed")
+        print "Data Scraping failed"
         exit()
     clean_data=[]
     for d in data:
