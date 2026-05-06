@@ -1,4 +1,5 @@
 from mcp.server.fastmcp import FastMCP
+from mcp.server.sse import SseServerTransport
 from starlette.applications import Starlette
 from starlette.requests import Request
 from starlette.responses import JSONResponse
@@ -32,10 +33,21 @@ def find_cheap_flight(origin: str, destination: str, date: str, budget: int) -> 
 async def health(request: Request) -> JSONResponse:
     return JSONResponse({"status": "ok"})
 
+sse = SseServerTransport("/messages/")
+
+async def handle_sse(request: Request):
+    async with sse.connect_sse(
+        request.scope, request.receive, request._send
+    ) as streams:
+        await mcp._mcp_server.run(
+            streams[0], streams[1], mcp._mcp_server.create_initialization_options()
+        )
+
 app = Starlette(
     routes=[
         Route("/health", endpoint=health, methods=["GET"]),
-        Mount("/", app=mcp.sse_app()),
+        Route("/sse", endpoint=handle_sse),
+        Mount("/messages/", app=sse.handle_post_message),
     ]
 )
 
