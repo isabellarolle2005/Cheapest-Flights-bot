@@ -1,4 +1,9 @@
 from mcp.server.fastmcp import FastMCP
+from starlette.applications import Starlette
+from starlette.requests import Request
+from starlette.responses import JSONResponse
+from starlette.routing import Mount, Route
+import uvicorn
 
 mcp = FastMCP(
     name="Cheap Flights Finder",
@@ -24,5 +29,15 @@ def find_cheap_flight(origin: str, destination: str, date: str, budget: int) -> 
         "recommendation": recommendation
     }
 
+async def health(request: Request) -> JSONResponse:
+    return JSONResponse({"status": "ok"})
+
+app = Starlette(
+    routes=[
+        Route("/health", endpoint=health, methods=["GET"]),
+        Mount("/", app=mcp.sse_app()),
+    ]
+)
+
 if __name__ == "__main__":
-    mcp.run(transport="sse")
+    uvicorn.run(app, host="0.0.0.0", port=8000)
