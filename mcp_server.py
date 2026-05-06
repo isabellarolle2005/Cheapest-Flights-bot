@@ -24,5 +24,8 @@ def find_cheap_flight(origin: str, destination: str, date: str, budget: int) -> 
         "recommendation": recommendation
     }
 
+import os
+
 if __name__ == "__main__":
-    mcp.run(transport="sse")
+    port = int(os.environ.get("PORT", 8000))
+    mcp.run(transport="sse", port=port)
